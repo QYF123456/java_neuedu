@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="mPerson" class="com.neuedu.Person">
+        <!--set注入 setHelloMessage()-->
+        <property name="helloMessage" ref="HelloChina"></property>
+
+    </bean>
+    <bean id="HelloWord" class="com.neuedu.HelloWord" ></bean>
+    <bean id="HelloChina" class="com.neuedu.HelloChina"></bean>
+</beans>
