@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.PageModel">
+
+   
+  
+  <!-- 查询分类信息总记录数 -->
+  <select id="findTotalCount" resultType="java.lang.Integer">
+  select count(id) from category
+  </select>
+  <!--分页查询类别信息  -->
+  <select id="FindAllCateByPage" parameterType="java.util.Map" resultType="com.cro.entity.Category" >
+  	select id,parent_id,name,status,sort_order,create_time,update_time from category limit #{offset},#{pageSize}
+  </select>
+	<!-- 查询全部的类别信息 -->
+	<select id="FindAllCate" resultType="com.cro.entity.Category">
+	select id,parent_id,name,status,sort_order,create_time,update_time from category 
+	</select>
+	
+	<!-- 根据id删除类别信息 -->
+	<delete id="deleteCateById" parameterType="java.lang.Integer">
+	delete from category where id=#{id}
+	</delete>
+	<!-- 添加类别信息 -->
+	<insert id="insertCategory" parameterType="com.cro.entity.Category" >
+	insert into category (id,parent_id,name,status,sort_order,create_time,update_time) values(#{id},#{parent_id},#{name},#{status},#{sort_order},now(),now())
+	</insert>
+	<!-- 根据id查找类别信息 -->
+	<select id="findCategorybyid" parameterType="java.lang.Integer" resultType="com.cro.entity.Category">
+	select * from category where id=#{id}
+	</select>
+	
+	<!-- 根据用户信息进行修改 -->
+	<update id="UpdateCategory" parameterType="java.util.Map" >
+	update category set
+	<if test="cat.parent_id!=null">
+	 parent_id=#{cat.parent_id},
+	</if>
+	<if test="cat.name!=null">
+	name=#{cat.name},
+	</if>
+	<if test="cat.status">
+	status=#{cat.status},
+	</if>
+	<if test="cat.sort_order!=null">
+	sort_order=#{cat.sort_order}
+	</if>
+	
+	 where id=#{id}
+	</update>
+
+</mapper>

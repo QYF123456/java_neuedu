@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.Cart">
+
+	<!-- 根据用户id分页查询商品信息 -->
+	 <resultMap type="com.cro.entity.Cart" id="cart_user_resultmap" autoMapping="true">
+	<id column="id" property="id"/>
+	<result column="quantity" property="quantity"/>
+	<!-- 映射User对象 -->
+	<association property="user" column="id" javaType="com.cro.entity.User" autoMapping="true">
+	<id column="uid" property="id"/>
+	</association>
+	<!-- 映射Product对象 -->
+	 <association property="product" column="id" javaType="com.cro.entity.Product" autoMapping="true">
+	<id column="pid" property="id"/>
+	</association>
+	</resultMap>
+	
+	<!-- 查询信息总记录数 -->
+  <select id="findTotalCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  select count(id) from cart where user_id=#{user_id}
+  </select>
+  <!--分页查询信息  -->
+   <select id="findUserCart" parameterType="java.util.Map" resultMap="cart_user_resultmap">
+	select c.id id,u.id uid,u.username username,p.id pid,p.name name,p.price price,c.quantity quantity,
+c.checked checked,c.create_time create_time,c.update_time update_time
+ 	from cart c 
+	left join user u
+	on c.user_id=u.id
+	left join product p
+	on c.product_id=p.id
+	where user_id=#{user_id} limit #{offset},#{pageSize} 
+	</select>
+	
+	 
+	
+   <!-- 根据用户id和商品id查询商品信息 -->
+ 	<select id="findCartByUserIdAndProductId" parameterType="java.util.Map" resultType="com.cro.entity.Cart">
+ 	select c.id id,u.username username,p.name name,c.quantity quantity,
+c.checked checked,c.create_time create_time,c.update_time update_time
+ 	from cart c 
+	left join user u
+	on c.user_id=u.id
+	left join product p
+	on c.product_id=p.id
+	where user_id=#{user_id} and product_id=#{product_id}
+ 	</select>
+ 	
+ 	<!-- 根据用户id和商品id更新购物车商品的数量 -->
+ 	<update id="updateCartByUserIdAndProductId" parameterType="java.util.Map">
+ 	update cart set quantity=#{quantity},update_time=now() 
+ 	<where>
+ 	 user_id=#{user_id}
+ 	 <if test="product_id>0">
+ 	 and product_id=#{product_id}
+ 	 </if>
+ 	</where> 
+ 	</update>
+ 	
+ 
+ 	<!-- 用户将商品添加到购物车 -->
+ 	<insert id="addProducttoCart" parameterType="java.util.Map" >
+ 	insert into cart (user_id,product_id,quantity,checked,create_time,update_time) values(#{cart.user_id},#{cart.product_id},#{cart.quantity},#{cart.checked},now(),now())
+ 	</insert>
+ 	
+ 	<!-- 移除购物车中的商品 -->
+ 	<delete id="deleteCartByUserIdAndProductId" parameterType="java.util.Map" >
+ 	delete from cart 
+ 	<where>
+ 	<if test="id>=0">
+ 	id=#{id}
+ 	</if>
+ 	</where>
+ 	</delete>
+ 	<!-- 查询购物车中商品的数量 -->
+ 	<select id="findCartProductCountByCartQuantity" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+ 	select sum(quantity) from cart 
+ 	<where>
+ 	user_id=#{user_id}
+ 	</where>
+ 	</select>
+ 	
+ 	<!-- 根据用户id,商品id选择其购物车下的部分商品或全部商品 -->
+ 	<update id="updateCartcheckedByUseridAndProductid"  parameterType="java.util.Map">
+ 	update cart set checked=#{checked} 
+ 	<where>
+ 	 user_id=#{user_id}
+ 	 <if test="product_id>0">
+ 	 and product_id=#{product_id}
+ 	 </if>
+ 	</where>
+ 	
+ 	</update>
+ 	<!-- 查询用户在购物车中已选中的商品 -->
+ 	<select id="findCheckCart" parameterType="java.lang.Integer" resultType="com.cro.entity.Cart">
+ 	select id,user_id,product_id,quantity,checked,create_time,update_time
+ 	from cart where user_id=#{user_id} and checked=1
+ 	</select>
+ 	
+ 	<!-- 根据用户id，删除该用户购物车内被选中的商品 -->
+ 	<delete id="deleteCheckedCartByUserId"  parameterType="java.lang.Integer">
+ 	delete from cart where user_id=#{user_id} and checked=1
+ 	</delete>
+ 	<!-- 查询购物车中商品的数量 -->
+ 	<select id="findCartproductCountByUserId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+ 	select count(id) from cart 
+ 	<where>
+ 	user_id=#{user_id}
+ 	</where>
+ 	</select>
+</mapper>

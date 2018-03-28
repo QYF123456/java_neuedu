@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.Address">
+
+   
+  
+  <!-- 查询信息总记录数 -->
+  <select id="findTotalCount" resultType="java.lang.Integer">
+  select count(id) from address where user_id=#{user_id}
+  </select>
+  <!--分页查询信息  -->
+  <select id="findUserAddress" parameterType="java.util.Map" resultType="com.cro.entity.Address" >
+  	select id,user_id,receiver_name,receiver_phone,receiver_mobile,receiver_provinc,receiver_city,receiver_district,receiver_address,receiver_zip,create_time,update_time from address where user_id=#{user_id} limit #{offset},#{pageSize} 
+  </select>
+	
+	<!-- 添加地址信息 -->
+	<insert id="addAddress" parameterType="java.util.Map">
+	insert into address(user_id,receiver_name,receiver_phone,receiver_mobile,receiver_provinc,receiver_city,receiver_district,receiver_address,receiver_zip,create_time,update_time) 
+	values(#{user_id},#{address.receiver_name},#{address.receiver_phone},#{address.receiver_mobile},#{address.receiver_provinc},#{address.receiver_city},#{address.receiver_district},#{address.receiver_address},#{address.receiver_zip},now(),now())
+	</insert>
+	
+	<!-- 删除地址信息 -->
+	<delete id="deleteAddressByUserid" parameterType="java.lang.Integer">
+	delete from address where id=#{id}
+	</delete>
+	<!-- 根据id查询用户的该地址信息 -->
+	<select id="findAddressByid" parameterType="java.lang.Integer" resultType="com.cro.entity.Address">
+	select id,user_id,receiver_name,receiver_phone,receiver_mobile,receiver_provinc,receiver_city,receiver_district,receiver_address,receiver_zip,create_time,update_time from address where id=#{id}
+	</select>
+	
+	<!-- 修改地址信息 -->
+	<update id="updateUserAddressByUserid" parameterType="java.util.Map">
+	update address set 
+	<if test="address.receiver_name!=null">
+	receiver_name=#{address.receiver_name},
+	</if>
+	<if test="address.receiver_phone!=null">
+	receiver_phone=#{address.receiver_phone},
+	</if>
+	<if test="address.receiver_mobile">
+	receiver_mobile=#{address.receiver_mobile},
+	</if>
+	<if test="address.receiver_provinc">
+	receiver_provinc=#{address.receiver_provinc},
+	</if>
+	<if test="address.receiver_city">
+	receiver_city=#{address.receiver_city},
+	</if>
+	<if test="address.receiver_district">
+	receiver_district=#{address.receiver_district},
+	</if>
+	<if test="address.receiver_address">
+	receiver_address=#{address.receiver_address},
+	</if>
+	<if test="address.receiver_zip">
+	receiver_zip=#{address.receiver_zip}
+	</if>
+	
+	where id=#{id} 
+	</update>
+
+</mapper>

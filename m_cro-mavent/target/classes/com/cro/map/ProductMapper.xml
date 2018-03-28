@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.Product">
+
+ <!-- 根据id查找商品库存 -->
+ <select id="findstock" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+ select stock from product where id=#{id}
+ </select>
+ 
+ <!-- 根据订单商品数量更新商品库存 -->
+ <update id="updatestock" parameterType="java.util.Map">
+ update product set stock=stock-#{quantity}  where id=#{id}
+ </update>
+</mapper>

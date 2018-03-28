@@ -1,0 +1,41 @@
+@charset "UTF-8";
+<style>
+			body{
+				background-image: url(/img/531.jpg);
+				background-repeat: no-repeat;
+			}
+				h1{
+					text-align:center;
+					margin-top: 50px;
+					font-family: "微软雅黑";
+					font-size: 32px;
+					font-style:italic;
+					font-weight: bolder;
+					text-shadow:5px 5px 5px #FFFFFF;
+				}
+				h2{
+					text-align:center;
+					/*margin-top: 50px;*/
+					font-family: "微软雅黑";
+					font-size: 28px;
+				}
+				form{
+					width: 280px;
+					height: 260px;
+					position: relative;
+					left: 700px;
+					top: 15px;
+					font-family: "微软雅黑";
+					font-size: 18px;
+				}
+				form>input{
+					height: 20px;
+					
+				}
+				input:last-child{
+					width: 120px;
+					height: 30px;
+					/*position: relative;
+					left: 100px;*/
+				}
+			</style>

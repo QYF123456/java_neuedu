@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.Userorder">
+
+ <!-- 添加订单 -->
+ <insert id="InsertUserorder" parameterType="com.cro.entity.Userorder" keyColumn="id" keyProperty="id">
+ insert into userorder (order_no,user_id,shipping_id,payment,payment_type,postage,status,payment_time,send_time,end_time,create_time,update_time,close_time)
+ values(#{order_no},#{user_id},#{shipping_id},#{payment},#{payment_type},#{postage},#{status},now(),now(),now(),now(),now(),now())
+ </insert>
+ 
+ <!-- 分页查询订单信息 -->
+  <resultMap type="com.cro.entity.Userorder" id="cart_userandaddress_resultmap" autoMapping="true">
+	<id column="id" property="id"/>
+	<!-- 映射User对象 -->
+	<association property="user" column="id" javaType="com.cro.entity.User" autoMapping="true">
+	<id column="id" property="id"/>
+	</association>
+	<association property="address" column="id" javaType="com.cro.entity.Address" autoMapping="true">
+	<id column="id" property="id"/>
+	</association>
+</resultMap>
+  <!-- 查询信息总记录数 -->
+  <select id="findTotalCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  select count(id) from userorder where user_id=#{user_id}
+  </select>
+  <!--分页查询信息  -->
+  <select id="findPageUserorder" parameterType="java.util.Map" resultMap="cart_userandaddress_resultmap" >
+    select uo.id,uo.order_no,u.username,a.receiver_name,uo.payment,uo.payment_type,uo.postage,
+    uo.status,uo.payment_time,uo.send_time,uo.end_time,uo.create_time,uo.update_time,uo.close_time
+  	from userorder  uo
+  	left join user u
+  	on uo.user_id=u.id
+  	left join address a
+  	on uo.shipping_id=a.id
+  	where uo.user_id=#{user_id} limit #{offset},#{pageSize}
+  	
+  </select>
+ 
+ <!-- 根据订单号查询订单信息 -->
+  <resultMap type="com.cro.entity.Userorder" id="userorderByorder_no" autoMapping="true">
+	<id column="id" property="id"/>
+	<!-- 映射User对象 -->
+	<association property="user" column="id" javaType="com.cro.entity.User" autoMapping="true">
+	<id column="id" property="id"/>
+	</association>
+	<association property="address" column="id" javaType="com.cro.entity.Address" autoMapping="true">
+	<id column="id" property="id"/>
+	</association>
+	
+</resultMap>
+ <!-- 查询信息总记录数 -->
+  <select id="findTotalCountitem_id" parameterType="java.lang.Long" resultType="java.lang.Integer">
+  select  count(item_id) from userorder_item where order_no=#{order_no}
+  </select>
+  <!--分页查询信息  -->
+ <select id="findUserorderByOrderNo" parameterType="java.util.Map" resultMap="userorderByorder_no">
+  select uo.id,uo.order_no,u.username,a.receiver_name,uo.payment,uo.payment_type,uo.postage,
+    uo.status,uo.payment_time,uo.send_time,uo.end_time,uo.create_time,uo.update_time,uo.close_time
+  	from userorder  uo
+  	left join user u
+  	on uo.user_id=u.id
+  	left join address a
+  	on uo.shipping_id=a.id
+ where uo.order_no=#{order_no} limit #{offset},#{pageSize}
+ </select>
+ 
+ <!-- 根据订单编号更新订单的状态 -->
+ <update id="updateStatus" parameterType="java.util.Map">
+ update userorder set status=#{status},send_time=now() where order_no=#{order_no}
+ </update>
+ 
+ <!-- 根据 订单号，查找订单商品信息 -->
+ <select id="SelectProductByUserorderItem" parameterType="java.lang.Long" resultType="com.cro.entity.Product">
+ select p.id,p.category_id,p.name,p.subtitle,p.main_image,p.detail,p.price,p.stock,p.status
+ from product p
+ left join userorder_item item
+ on p.id=item.product_id
+ where item.order_no=#{order_no}
+ </select>
+</mapper>

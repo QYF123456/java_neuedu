@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.User">
+
+   
+  <!-- 根据用户名查询该用户是否存在 -->
+  <select id="checkUserName" parameterType="java.lang.String" resultType="java.lang.Integer">
+  select count(username) from user where username=#{username}
+  </select>
+<!-- 根据用户名和密码查询该用户 -->
+ <select id="findUserandpwd"   parameterType="map"
+  resultType="com.cro.entity.User">
+  	 select id,username,password from user where username=#{username} and password=#{password}
+  </select>
+  
+<!-- 根据id更新该用户的tooken -->  
+	<update id="updateUsertookenById" parameterType="java.util.Map" >
+	update user set tooken=#{tooken} where id=#{id}
+	</update>
+	
+<!-- 通过tooken查找用户 -->
+	<select id="finUserBytooken" parameterType="java.lang.String" resultType="com.cro.entity.User">
+	select id,username,password,tooken from user where tooken=#{tooken}
+	</select>
+</mapper>

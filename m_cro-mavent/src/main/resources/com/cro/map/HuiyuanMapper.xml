@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.User">
+
+   
+  
+  <!-- 查询信息总记录数 -->
+  <select id="findTotalCount" resultType="java.lang.Integer">
+  select count(id) from user
+  </select>
+  <!--分页查询信息  -->
+  <select id="findUser" parameterType="java.util.Map" resultType="com.cro.entity.User" >
+  	select id,username,password,email,phone,question,answer,role,create_time,update_time from user  limit #{offset},#{pageSize}
+  </select>
+	
+	
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.cro.entity.Userorder_item">
+
+<insert id="insertUserorderItem" parameterType="list" keyColumn="item_id" keyProperty="item_id">
+insert into userorder_item 
+(order_no,user_id,product_id,product_name,product_image,current_unit_price,quantity,
+total_price,create_time,update_time)
+values
+<foreach collection="list" item="order_item" separator=",">
+(#{order_item.order_no},#{order_item.user_id},#{order_item.product_id},#{order_item.product_name},#{order_item.product_image},#{order_item.current_unit_price},#{order_item.quantity},#{order_item.total_price},now(),now())
+</foreach>
+</insert>
+<!-- 根据订单号查询订单明细 -->
+ <resultMap type="com.cro.entity.Userorder_item" id="userorderitemByorder_no" autoMapping="true">
+	<id column="id" property="id"/>
+	<!-- 映射User对象 -->
+	<association property="user" column="id" javaType="com.cro.entity.User" autoMapping="true">
+	<id column="id" property="id"/>
+	</association>
+</resultMap>
+<select id="findUserorderItemsByOrderNo" parameterType="java.lang.Long" resultMap="userorderitemByorder_no">
+select item.item_id,item.order_no,u.username,item.product_name,item.product_image,item.current_unit_price,item.quantity,item.total_price,item.create_time,item.update_time
+from userorder_item item
+join user u
+on item.user_id=u.id
+where item.order_no=#{order_no}
+</select>
+</mapper>
+ 
